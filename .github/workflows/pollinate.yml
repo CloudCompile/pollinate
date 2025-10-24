@@ -1,0 +1,53 @@
+# Example workflow showing how to use Pollinate AI
+# Copy this to .github/workflows/pollinate.yml in your repository
+
+name: Pollinate AI - Feature Implementation
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  pollinate:
+    runs-on: ubuntu-latest
+    # Only run when comment starts with !Pollinate or !pollinate
+    if: startsWith(github.event.comment.body, '!Pollinate') || startsWith(github.event.comment.body, '!pollinate')
+    
+    steps:
+      - name: Run Pollinate AI
+        uses: cloudcompile/pollinate-ai@v1
+        with:
+          # Required: GitHub token for creating PRs and comments
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # Optional: Your Pollinations AI API key
+          # Leave blank to use the default key
+          # pollinations_api_key: ${{ secrets.POLLINATIONS_API_KEY }}
+          
+          # Optional: Base branch for pull requests (default: main)
+          base_branch: main
+          
+          # Optional: Enable/disable features
+          auto_assign_reviewers: true
+          enable_security_scan: true
+          enable_tests: true
+          enable_linting: true
+
+# Usage examples:
+# 
+# Implement a feature:
+#   !Pollinate add user authentication with JWT
+#
+# Get explanation first:
+#   !Pollinate explain add pagination to blog posts
+#
+# Refine implementation:
+#   !Pollinate refine add error handling and loading states
+#
+# Rollback changes:
+#   !Pollinate rollback
